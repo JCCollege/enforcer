@@ -18,101 +18,6 @@
         android:layout_alignParentBottom="true"
         android:id="@+id/layout_form" >
 
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="ID Number"/>
-
-                <EditText
-                    android:layout_width="0dp"
-                    android:layout_weight="2.2"
-                    android:hint="ID"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/edit_id"
-                    android:imeOptions="flagNoExtractUi"/>
-
-                <Button
-                    android:id="@+id/btn_launchBR"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.8"
-                    android:background="@mipmap/bc_scan" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Incident Type"/>
-
-                <Spinner
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinner_incident"
-                    android:entries="@array/incidents"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Information"/>
-
-                <EditText
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:hint="Extra information here"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/edit_exinfo"
-                    android:imeOptions="flagNoExtractUi"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Staff ID"/>
-
-                <EditText
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:hint="Staff ID"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/edit_staff_id"
-                    android:inputType="textEmailAddress"
-                    android:singleLine="true"
-                    android:maxLength="20"
-                    android:imeOptions="actionSend|flagNoExtractUi"
-                    android:imeActionLabel="@string/str_submit"/>
-            </TableRow>
-
-        </TableLayout>
-
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
@@ -141,15 +46,108 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Instructions will go here"
-        android:id="@+id/txt_instructions"
         android:layout_below="@+id/imageButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="31dp" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="128dp">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Category"
+                android:phoneNumber="false" />
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_incident"
+                android:entries="@array/incidents"
+                android:layout_column="14" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Information"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:hint="Extra information here"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_exinfo"
+                android:imeOptions="flagNoExtractUi"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Staff ID"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:hint="Staff ID"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_staff_id"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"
+                android:maxLength="20"
+                android:imeOptions="actionSend|flagNoExtractUi"
+                android:imeActionLabel="@string/str_submit"/>
+        </TableRow>
+
+    </TableLayout>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="29dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="ID Number"/>
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="2.2"
+            android:hint="ID"
+            android:layout_height="wrap_content"
+            android:id="@+id/edit_id"
+            android:imeOptions="flagNoExtractUi"/>
+
+        <Button
+            android:id="@+id/btn_launchBR"
+            android:layout_width="0dp"
+            android:layout_weight="0.8"
+            android:background="@mipmap/bc_scan" />
+    </TableRow>
 
 </RelativeLayout>
