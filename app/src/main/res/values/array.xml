@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="incidents">
+        <item>Not wearing ID Card</item>
+        <item>Inappropriate behaviour</item>
+        <item>Fight</item>
+        <item>Other grievance</item>
+    </string-array>
+</resources>
