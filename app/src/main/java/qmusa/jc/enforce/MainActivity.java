@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity
         btn_submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                uploadFirebase();
+                uploadFirebase(v);
             }
         });
 
@@ -225,7 +224,7 @@ public class MainActivity extends AppCompatActivity
 //
 //    }
 
-    public void uploadFirebase(){
+    public void uploadFirebase(View v){
         calendar = Calendar.getInstance();
         String str_id = edit_idNumber.getText().toString();
         String str_info = edit_exinfo.getText().toString();
@@ -240,6 +239,8 @@ public class MainActivity extends AppCompatActivity
             initFirebase();
         } else {
             myFirebaseRef.child("users").child(firebaseAuthData.getUid()).child(calendar.getTime().toString()).setValue(payload);
+            Snackbar.make(v, "Details of the incident have been submitted.", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         }
 
 //        myFirebaseRef.child("Staff ID number").setValue(str_staff);

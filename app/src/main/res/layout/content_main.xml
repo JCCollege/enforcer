@@ -12,142 +12,135 @@
     tools:context="qmusa.jc.enforce.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/layout_form" >
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/btn_submit"
-                android:text="Clear"
-                android:id="@+id/btn_clear"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="@string/str_submit"
-                android:id="@+id/btn_submit"/>
-        </RelativeLayout>
-    </LinearLayout>
-
     <ImageButton
         android:layout_width="250dp"
         android:layout_height="75dp"
-        android:id="@+id/imageButton"
+        android:id="@+id/jcc_logo"
         android:background="@mipmap/jcc_logo"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="128dp">
+        android:layout_marginBottom="30dp"/>
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Category"
-                android:phoneNumber="false" />
-
-            <Spinner
-                android:layout_width="0dp"
-                android:layout_weight="3"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner_incident"
-                android:entries="@array/incidents"
-                android:layout_column="14" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Information"/>
-
-            <EditText
-                android:layout_width="0dp"
-                android:layout_weight="3"
-                android:hint="Extra information here"
-                android:layout_height="wrap_content"
-                android:id="@+id/edit_exinfo"
-                android:imeOptions="flagNoExtractUi"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Staff ID"/>
-
-            <EditText
-                android:layout_width="0dp"
-                android:layout_weight="3"
-                android:hint="Staff ID"
-                android:layout_height="wrap_content"
-                android:id="@+id/edit_staff_id"
-                android:inputType="textEmailAddress"
-                android:singleLine="true"
-                android:maxLength="20"
-                android:imeOptions="actionSend|flagNoExtractUi"
-                android:imeActionLabel="@string/str_submit"/>
-        </TableRow>
-
-    </TableLayout>
-
-    <TableRow
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageButton"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="29dp">
+        android:layout_below="@+id/jcc_logo"
+        android:id="@+id/layout_form" >
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="ID Number"/>
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginBottom="10dp"
+            android:text="JCC incident reporting form. Please refer to the help section of this app for a user guide on how to use this application."/>
 
-        <EditText
-            android:layout_width="0dp"
-            android:layout_weight="2.2"
-            android:hint="ID"
-            android:layout_height="wrap_content"
-            android:id="@+id/edit_id"
-            android:imeOptions="flagNoExtractUi"/>
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="4.2"
+                    android:hint="Student ID"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edit_id"
+                    android:imeOptions="flagNoExtractUi"/>
+
+                <Button
+                    android:id="@+id/btn_launchBR"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.8"
+                    android:background="@mipmap/bc_scan" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Incident Type"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinner_incident"
+                    android:entries="@array/incidents"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="Input any addtitional information here.\n\n\n\n"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edit_exinfo"
+                    android:imeOptions="flagNoExtractUi"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="Input your Staff ID"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edit_staff_id"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:maxLength="20"
+                    android:imeOptions="actionSend|flagNoExtractUi"
+                    android:imeActionLabel="@string/str_submit"/>
+            </TableRow>
+
+        </TableLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/layout_button"
+        android:layout_alignParentBottom="true">
 
         <Button
-            android:id="@+id/btn_launchBR"
-            android:layout_width="0dp"
-            android:layout_weight="0.8"
-            android:background="@mipmap/bc_scan" />
-    </TableRow>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btn_submit"
+            android:text="Clear"
+            android:id="@+id/btn_clear"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/str_submit"
+            android:id="@+id/btn_submit"/>
+    </LinearLayout>
+
+
 
 </RelativeLayout>
