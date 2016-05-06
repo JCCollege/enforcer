@@ -48,6 +48,8 @@
                 <EditText
                     android:layout_width="0dp"
                     android:layout_weight="4.2"
+                    android:singleLine="true"
+                    android:maxLength="6"
                     android:hint="Student ID"
                     android:textColorHint="@color/colorGrey"
                     android:layout_height="wrap_content"
@@ -93,7 +95,7 @@
                 <EditText
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:maxLines="5"
+                    android:maxLines="7"
                     android:textColorHint="@color/colorGrey"
                     android:hint="Input any addtitional information here."
                     android:layout_height="wrap_content"
@@ -102,6 +104,7 @@
             </TableRow>
 
             <TableRow
+                android:visibility="gone"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
@@ -135,6 +138,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?metaButtonBarButtonStyle"
             android:layout_toLeftOf="@+id/btn_submit"
             android:text="Clear"
             android:id="@+id/btn_clear"/>
@@ -142,6 +147,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?metaButtonBarButtonStyle"
             android:layout_alignParentRight="true"
             android:text="@string/str_submit"
             android:id="@+id/btn_submit"/>

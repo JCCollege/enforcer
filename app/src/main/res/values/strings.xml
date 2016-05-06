@@ -6,4 +6,8 @@
     <string name="str_submit">Submit</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="title_activity_splash">JCC Enforcer Registration</string>
+    <string name="str_finish">Register</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

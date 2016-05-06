@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -17,13 +18,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
@@ -46,8 +50,8 @@ public class MainActivity extends AppCompatActivity
     final String jcc_prefs = "JCCPrefs";
     SharedPreferences shared_preferences;
     SharedPreferences.Editor editor;
-    String fireAuthStr;
     Gson gson;
+    static int bool_uploaded = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +60,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //initialise main method
         initialise();
-//
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -110,6 +107,14 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void onResume(){
+        super.onResume();
+        if (shared_preferences.getString("Registered",null) == null) {
+            Intent intent = new Intent(context, Splash.class);
+            startActivity(intent);
+        }
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -148,9 +153,6 @@ public class MainActivity extends AppCompatActivity
 
         initFirebase();
 
-        //validate if firebase authcode is stored in device.
-        //validateFireAuth();
-
         //Find all EditTexts
         payload = new HashMap<String,String>();
         edit_staff_id = (EditText)findViewById(R.id.edit_staff_id);
@@ -171,6 +173,21 @@ public class MainActivity extends AppCompatActivity
         btn_clear.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
+                new AlertDialog.Builder(context)
+                        .setTitle("Clear fields")
+                        .setMessage("Clear all fields?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //mScannerView.resumeCameraPreview(this);
+                                clearData();
+                            };
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
                clearData();
             }
         });
@@ -209,13 +226,12 @@ public class MainActivity extends AppCompatActivity
         myFirebaseRef.keepSynced(true);
     }
 
-    public void uploadFirebase(View v){
+    public void uploadFirebase(final View v){
+
         calendar = Calendar.getInstance();
         String str_id = edit_idNumber.getText().toString();
         String str_info = edit_exinfo.getText().toString();
-        String str_staff = edit_staff_id.getText().toString();
         String str_incident = spinner_incident.getSelectedItem().toString();
-        payload.put("Staff ID number",str_staff);
         payload.put("Student ID number",str_id);
         payload.put("Incident Information",str_incident);
         payload.put("Extra Info",str_info);
@@ -225,16 +241,49 @@ public class MainActivity extends AppCompatActivity
             Snackbar.make(v, "Still loading. Please wait...", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         } else {
-            myFirebaseRef.child("users").child("dblower").child(firebaseAuthData.getUid()).child(calendar.getTime().toString()).setValue(payload);
-            Snackbar.make(v, "Details of the incident have been submitted.", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            new AlertDialog.Builder(this)
+                .setTitle("Upload data?")
+                .setMessage("Are you sure you would like to submit this incident?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //mScannerView.resumeCameraPreview(this);
+                        try {
+                            myFirebaseRef.child("users").child("dblower").child(firebaseAuthData.getUid()).child("Incident(s)").child(calendar.getTime().toString()).setValue(payload);
+
+                            Snackbar snack = Snackbar.make(v, "Details of the incident have been submitted.", Snackbar.LENGTH_LONG);
+                            ViewGroup group = (ViewGroup) snack.getView();
+                            group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorGreen));
+                            snack.show();
+                            clearData();
+                        } catch (Exception E) {
+                            Snackbar snack = Snackbar.make(v, "Failed to upload!", Snackbar.LENGTH_LONG);
+                            ViewGroup group = (ViewGroup) snack.getView();
+                            group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
+                            snack.show();
+                            Log.e("firebase upload failed:", E.toString());
+                        }
+                    };
+
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Snackbar.make(v, "Upload cancelled.", Snackbar.LENGTH_LONG)
+                            .show();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
         }
+
     }
 
     public void clearData(){
-        edit_staff_id.setText("");
         edit_exinfo.setText("");
         edit_idNumber.setText("");
+    }
+
+    public void createAlert(String title, String message, String neg_btn, String pos_button, final String ref, final View v){
+
     }
 
 
@@ -258,7 +307,6 @@ public class MainActivity extends AppCompatActivity
                         .show();
                 }
             }
-
         }
     }
 }
