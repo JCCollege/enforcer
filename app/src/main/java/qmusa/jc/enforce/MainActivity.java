@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity
                         try {
                             myFirebaseRef.child("users").child("dblower").child(firebaseAuthData.getUid()).child("Incident(s)").child(calendar.getTime().toString()).setValue(payload);
 
-                            Snackbar snack = Snackbar.make(v, "Details of the incident have been submitted.", Snackbar.LENGTH_LONG);
+                            Snackbar snack = Snackbar.make(v, "Details of the incident have been recorded.", Snackbar.LENGTH_LONG);
                             ViewGroup group = (ViewGroup) snack.getView();
                             group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorGreen));
                             snack.show();
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Snackbar.make(v, "Upload cancelled.", Snackbar.LENGTH_LONG)
+                        Snackbar.make(v, "Submission cancelled.", Snackbar.LENGTH_LONG)
                             .show();
                     }
                 })
