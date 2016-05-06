@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -170,9 +171,7 @@ public class MainActivity extends AppCompatActivity
         btn_clear.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                edit_staff_id.setText("");
-                edit_exinfo.setText("");
-                edit_idNumber.setText("");
+               clearData();
             }
         });
 
@@ -210,20 +209,6 @@ public class MainActivity extends AppCompatActivity
         myFirebaseRef.keepSynced(true);
     }
 
-//    public void validateFireAuth(){
-//        if (!shared_preferences.contains("fireAuthStr")){
-//            initFirebase();
-//        } else {
-//            Log.e("on else","running this");
-//            String json = shared_preferences.getString("fireAuthStr",null);
-//            AuthData authdata_convert = gson.fromJson(json, AuthData.class);
-//            firebaseAuthData = authdata_convert;
-//
-//        }
-//        //Initialise Firebase.
-//
-//    }
-
     public void uploadFirebase(View v){
         calendar = Calendar.getInstance();
         String str_id = edit_idNumber.getText().toString();
@@ -237,16 +222,19 @@ public class MainActivity extends AppCompatActivity
 
         if (firebaseAuthData == null){
             initFirebase();
+            Snackbar.make(v, "Still loading. Please wait...", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         } else {
-            myFirebaseRef.child("users").child(firebaseAuthData.getUid()).child(calendar.getTime().toString()).setValue(payload);
+            myFirebaseRef.child("users").child("dblower").child(firebaseAuthData.getUid()).child(calendar.getTime().toString()).setValue(payload);
             Snackbar.make(v, "Details of the incident have been submitted.", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
+    }
 
-//        myFirebaseRef.child("Staff ID number").setValue(str_staff);
-//        myFirebaseRef.child("Student ID number").setValue(str_id);
-//        myFirebaseRef.child("Incident Information").setValue(str_incident);
-//        myFirebaseRef.child("Extra Info").setValue(str_info);
+    public void clearData(){
+        edit_staff_id.setText("");
+        edit_exinfo.setText("");
+        edit_idNumber.setText("");
     }
 
 
@@ -259,15 +247,15 @@ public class MainActivity extends AppCompatActivity
                     edit_idNumber.setText(str_stud_num);
                 } else {
                     new AlertDialog.Builder(this)
-                            .setTitle("Error!")
-                            .setMessage("The barcode you scanned doesn't appear to be that of a JCC student! Please scan the barcode again.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //cancel OR in other words don't do anything, as there is nothing to do here! simple.
-                                }
-                            })
-                            .setIcon(R.mipmap.error)
-                            .show();
+                        .setTitle("Error!")
+                        .setMessage("The barcode you scanned doesn't appear to be that of a JCC student! Please scan the barcode again.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //cancel OR in other words don't do anything, as there is nothing to do here! simple.
+                            }
+                        })
+                        .setIcon(R.mipmap.error)
+                        .show();
                 }
             }
 
