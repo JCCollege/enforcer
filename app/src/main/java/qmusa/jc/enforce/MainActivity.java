@@ -1,11 +1,14 @@
 package qmusa.jc.enforce;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     Context context = this;
     EditText edit_idNumber;
-    String str_stud_num = null;
+    String str_stud_num = null, str_id, str_info, str_incident;
     Button btn_submit, btn_clear, btn_br;
     EditText edit_staff_id, edit_exinfo;
     Spinner spinner_incident;
@@ -63,6 +66,32 @@ public class MainActivity extends AppCompatActivity
 
         //initialise main method
         initialise();
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        0);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -82,6 +111,31 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 0: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
@@ -229,9 +283,9 @@ public class MainActivity extends AppCompatActivity
     public void uploadFirebase(final View v){
 
         calendar = Calendar.getInstance();
-        String str_id = edit_idNumber.getText().toString();
-        String str_info = edit_exinfo.getText().toString();
-        String str_incident = spinner_incident.getSelectedItem().toString();
+        str_id = edit_idNumber.getText().toString();
+        str_info = edit_exinfo.getText().toString();
+        str_incident = spinner_incident.getSelectedItem().toString();
         payload.put("Student ID number",str_id);
         payload.put("Incident Information",str_incident);
         payload.put("Extra Info",str_info);
@@ -241,38 +295,53 @@ public class MainActivity extends AppCompatActivity
             Snackbar.make(v, "Still loading. Please wait...", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         } else {
-            new AlertDialog.Builder(this)
-                .setTitle("Upload data?")
-                .setMessage("Are you sure you would like to submit this incident?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //mScannerView.resumeCameraPreview(this);
-                        try {
-                            myFirebaseRef.child("users").child("dblower").child(firebaseAuthData.getUid()).child("Incident(s)").child(calendar.getTime().toString()).setValue(payload);
+            if (uploadCheck() == 0) {
+                new AlertDialog.Builder(this)
+                    .setTitle("Upload data?")
+                    .setMessage("Are you sure you would like to submit this incident?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //mScannerView.resumeCameraPreview(this);
 
-                            Snackbar snack = Snackbar.make(v, "Details of the incident have been submitted.", Snackbar.LENGTH_LONG);
-                            ViewGroup group = (ViewGroup) snack.getView();
-                            group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorGreen));
-                            snack.show();
-                            clearData();
-                        } catch (Exception E) {
-                            Snackbar snack = Snackbar.make(v, "Failed to upload!", Snackbar.LENGTH_LONG);
-                            ViewGroup group = (ViewGroup) snack.getView();
-                            group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
-                            snack.show();
-                            Log.e("firebase upload failed:", E.toString());
+                            try {
+                                myFirebaseRef.child("users").child("dblower").child(firebaseAuthData.getUid()).child("Incident(s)").child(calendar.getTime().toString()).setValue(payload);
+
+                                Snackbar snack = Snackbar.make(v, "Details of the incident have been submitted.", Snackbar.LENGTH_LONG);
+                                ViewGroup group = (ViewGroup) snack.getView();
+                                group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorGreen));
+                                snack.show();
+                                clearData();
+                            } catch (Exception E) {
+                                Snackbar snack = Snackbar.make(v, "Failed to upload!", Snackbar.LENGTH_LONG);
+                                ViewGroup group = (ViewGroup) snack.getView();
+                                group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
+                                snack.show();
+                                Log.e("firebase upload failed:", E.toString());
+                            }
                         }
-                    };
 
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Snackbar.make(v, "Upload cancelled.", Snackbar.LENGTH_LONG)
-                            .show();
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+                        ;
+
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Snackbar.make(v, "Upload cancelled.", Snackbar.LENGTH_LONG)
+                                    .show();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+            } else if (uploadCheck() == 1) {
+                Snackbar snack = Snackbar.make(v, "ID number not scanned!", Snackbar.LENGTH_LONG);
+                ViewGroup group = (ViewGroup) snack.getView();
+                group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
+                snack.show();
+            } else if (uploadCheck() == 2) {
+                Snackbar snack = Snackbar.make(v, "Info field not correctly filled in", Snackbar.LENGTH_LONG);
+                ViewGroup group = (ViewGroup) snack.getView();
+                group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
+                snack.show();
+            }
         }
 
     }
@@ -282,7 +351,13 @@ public class MainActivity extends AppCompatActivity
         edit_idNumber.setText("");
     }
 
-    public void createAlert(String title, String message, String neg_btn, String pos_button, final String ref, final View v){
+    public int uploadCheck(){
+        if (str_id.length() != 6)
+            return 1;
+        else if (str_info.length() <1)
+            return 2;
+        else
+            return 0;
 
     }
 

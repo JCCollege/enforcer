@@ -28,6 +28,7 @@ public class LaunchBarcode extends AppCompatActivity implements ZXingScannerView
         setContentView(R.layout.barcode_scanner);
 
         mScannerView = (ZXingScannerView) findViewById(R.id.scanner_view);
+
         //mScannerView = new ZXingScannerView(this);
         //.relativeLayout.addView(mScannerView);
 
