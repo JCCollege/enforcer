@@ -34,7 +34,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_marginBottom="10dp"
             android:textColor="@color/colorPrimary"
-            android:text="JCC incident reporting form. Please refer to the help section of this app for a user guide on how to use this application."/>
+            android:text="Record an incident by providing the detail required below, then click Submit."/>
 
         <TableLayout
             android:layout_width="fill_parent"
