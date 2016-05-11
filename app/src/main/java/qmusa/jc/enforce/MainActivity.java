@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences shared_preferences;
     SharedPreferences.Editor editor;
     Gson gson;
+    View v;
     static int bool_uploaded = 0;
 
     @Override
@@ -66,14 +67,14 @@ public class MainActivity extends AppCompatActivity
 
         //initialise main method
         initialise();
+        v = new View(context);
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.CAMERA)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
 
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -115,8 +116,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 0: {
                 // If request is cancelled, the result arrays are empty.
@@ -127,9 +127,12 @@ public class MainActivity extends AppCompatActivity
                     // contacts-related task you need to do.
 
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setIcon(R.mipmap.error);
+                    builder.setMessage("Permission denied to read barcode via the camera! Grant permission via settings or re-install the application.")
+                            .setTitle("Camera Permission Denied!");
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
                 return;
             }
@@ -302,9 +305,8 @@ public class MainActivity extends AppCompatActivity
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             //mScannerView.resumeCameraPreview(this);
-
                             try {
-                                myFirebaseRef.child("users").child("dblower").child(firebaseAuthData.getUid()).child("Incident(s)").child(calendar.getTime().toString()).setValue(payload);
+                                myFirebaseRef.child("users").child(shared_preferences.getString("StaffCode",null)).child(firebaseAuthData.getUid()).child("Incident(s)").child(calendar.getTime().toString()).setValue(payload);
 
                                 Snackbar snack = Snackbar.make(v, "Details of the incident have been submitted.", Snackbar.LENGTH_LONG);
                                 ViewGroup group = (ViewGroup) snack.getView();
@@ -318,10 +320,7 @@ public class MainActivity extends AppCompatActivity
                                 snack.show();
                                 Log.e("firebase upload failed:", E.toString());
                             }
-                        }
-
-                        ;
-
+                        };
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
