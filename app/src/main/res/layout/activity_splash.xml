@@ -25,7 +25,9 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <ImageButton
+
+        //"@mipmap/jcc_logo_white" - Cannot be found. Make sure it is part of the project.
+       <!--<ImageButton
             android:layout_width="250dp"
             android:layout_height="75dp"
             android:id="@+id/jcc_logo_white.png"
@@ -33,7 +35,7 @@
             android:background="@mipmap/jcc_logo_white"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"/>
+            android:layout_marginBottom="30dp"/>-->
 
         <TextView
             android:id="@+id/contact_form_title"
