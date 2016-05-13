@@ -26,8 +26,7 @@
         android:padding="16dp">
 
 
-        //"@mipmap/jcc_logo_white" - Cannot be found. Make sure it is part of the project.
-       <!--<ImageButton
+       <ImageButton
             android:layout_width="250dp"
             android:layout_height="75dp"
             android:id="@+id/jcc_logo_white.png"
@@ -35,7 +34,7 @@
             android:background="@mipmap/jcc_logo_white"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"/>-->
+            android:layout_marginBottom="30dp"/>
 
         <TextView
             android:id="@+id/contact_form_title"
@@ -49,25 +48,51 @@
             android:textSize="40sp"
             android:typeface="sans" />
 
-        <EditText
-            android:id="@+id/edit_staffName"
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:layout_marginTop="10dp"
-            android:hint="Name"
-            android:inputType="textPersonName" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/edit_staffCode"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:hint="Staff code"
-            android:textAllCaps="true"
-            android:inputType="textEmailAddress" />
+                <ImageButton
+                    android:id="@+id/img_sname"
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@mipmap/arrow" />
+
+                <EditText
+                    android:id="@+id/edit_staffName"
+                    android:layout_toRightOf="@+id/img_sname"
+                    android:layout_alignBottom="@+id/img_sname"
+                    android:layout_width="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:hint="Name"
+                    android:inputType="textPersonName" />
+
+
+
+
+                <ImageButton
+                    android:id="@+id/img_scode"
+                    android:layout_below="@+id/img_sname"
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@mipmap/arrow" />
+
+                <EditText
+                    android:id="@+id/edit_staffCode"
+                    android:layout_toRightOf="@+id/img_scode"
+                    android:layout_alignBottom="@+id/img_scode"
+                    android:layout_marginLeft="10dp"
+                    android:maxLength="3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:hint="Staff code"   />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
