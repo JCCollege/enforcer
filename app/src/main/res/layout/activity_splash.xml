@@ -66,6 +66,7 @@
             android:layout_marginTop="10dp"
             android:backgroundTint="@color/colorPrimaryDark"
             android:hint="Staff code"
+            android:textAllCaps="true"
             android:inputType="textEmailAddress" />
 
     </LinearLayout>

@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,7 +21,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,10 +28,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
@@ -55,7 +54,8 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences.Editor editor;
     Gson gson;
     View v;
-    static int bool_uploaded = 0;
+    private String device_id;
+    DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,35 +68,14 @@ public class MainActivity extends AppCompatActivity
         //initialise main method
         initialise();
         v = new View(context);
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CAMERA},
-                        0);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -107,7 +86,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -120,48 +98,32 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode) {
             case 0: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-                } else {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)){
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setIcon(R.mipmap.error);
                     builder.setMessage("Permission denied to read barcode via the camera! Grant permission via settings or re-install the application.")
-                            .setTitle("Camera Permission Denied!");
+                            .setTitle("Camera Permission Denied!")
+                            .setIcon(R.mipmap.error);
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public boolean onKeyDown(int keycode, KeyEvent e) {
+        switch(keycode) {
+            case KeyEvent.KEYCODE_MENU:
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+                return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        return super.onKeyDown(keycode, e);
     }
 
     public void onResume(){
@@ -178,21 +140,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_about) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(R.string.about)
+                    .setTitle("About")
+                    .setIcon(R.mipmap.icon);
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -207,6 +165,7 @@ public class MainActivity extends AppCompatActivity
         editor = shared_preferences.edit();
         gson = new Gson();
         calendar = Calendar.getInstance();
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         initFirebase();
 
@@ -243,7 +202,7 @@ public class MainActivity extends AppCompatActivity
                             public void onClick(DialogInterface dialog, int which) {
                             }
                         })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setIcon(R.mipmap.info_pop)
                         .show();
                clearData();
             }
@@ -306,7 +265,14 @@ public class MainActivity extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int which) {
                             //mScannerView.resumeCameraPreview(this);
                             try {
-                                myFirebaseRef.child("users").child(shared_preferences.getString("StaffCode",null)).child(firebaseAuthData.getUid()).child("Incident(s)").child(calendar.getTime().toString()).setValue(payload);
+                                myFirebaseRef
+                                        .child("Staff")
+                                            .child(shared_preferences.getString("StaffCode",null))
+                                                .child("Device_ID: "+ device_id)
+                                                    .child(firebaseAuthData.getUid())
+                                                        .child("Incident(s)")
+                                                            .child(calendar.getTime().toString())
+                                                                .setValue(payload);
 
                                 Snackbar snack = Snackbar.make(v, "Details of the incident have been submitted.", Snackbar.LENGTH_LONG);
                                 ViewGroup group = (ViewGroup) snack.getView();
@@ -314,7 +280,7 @@ public class MainActivity extends AppCompatActivity
                                 snack.show();
                                 clearData();
                             } catch (Exception E) {
-                                Snackbar snack = Snackbar.make(v, "Failed to upload!", Snackbar.LENGTH_LONG);
+                                Snackbar snack = Snackbar.make(v, "Failed to upload! Please call the IT Services office if error persists.", Snackbar.LENGTH_LONG);
                                 ViewGroup group = (ViewGroup) snack.getView();
                                 group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
                                 snack.show();
@@ -328,15 +294,15 @@ public class MainActivity extends AppCompatActivity
                                     .show();
                         }
                     })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIcon(R.mipmap.info)
                     .show();
             } else if (uploadCheck() == 1) {
-                Snackbar snack = Snackbar.make(v, "ID number not scanned!", Snackbar.LENGTH_LONG);
+                Snackbar snack = Snackbar.make(v, "ID number not scanned. Scan or input student's ID number.", Snackbar.LENGTH_LONG);
                 ViewGroup group = (ViewGroup) snack.getView();
                 group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
                 snack.show();
             } else if (uploadCheck() == 2) {
-                Snackbar snack = Snackbar.make(v, "Info field not correctly filled in", Snackbar.LENGTH_LONG);
+                Snackbar snack = Snackbar.make(v, "ID number not valid, please check you have typed the Student ID number correctly.", Snackbar.LENGTH_LONG);
                 ViewGroup group = (ViewGroup) snack.getView();
                 group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
                 snack.show();
@@ -351,13 +317,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public int uploadCheck(){
-        if (str_id.length() != 6)
+        if (str_id.length() == 0)
             return 1;
-        else if (str_info.length() <1)
+        else if (!str_id.matches("[I-Ui-u]{1}[0-9]{5}"))
             return 2;
         else
             return 0;
-
     }
 
 

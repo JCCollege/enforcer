@@ -10,4 +10,7 @@
     <string name="title_activity_splash">JCC Enforcer</string>
     <string name="str_finish">Register</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="about">JCC Enforcer is an app that allows staff members to log incidents involving JC students, and provide real time information, which is then uploaded to a secure server. \n\nThis app is created by Qasim Musa (qmusa@jcc.ac.uk).</string>
+
+
 </resources>
