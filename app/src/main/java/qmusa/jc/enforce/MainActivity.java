@@ -35,27 +35,28 @@ import com.google.gson.Gson;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    //Global Variables
     Context context = this;
-    EditText edit_idNumber;
     String str_stud_num = null, str_id, str_info, str_incident;
     Button btn_submit, btn_clear, btn_br;
-    EditText edit_staff_id, edit_exinfo;
+    EditText edit_idNumber, edit_staff_id, edit_exinfo;
     Spinner spinner_incident;
     Firebase myFirebaseRef;
     Map<String, String> payload;
     AuthData firebaseAuthData;
     Calendar calendar;
-    final String jcc_prefs = "JCCPrefs";
     SharedPreferences shared_preferences;
     SharedPreferences.Editor editor;
-    Gson gson;
     View v;
-    private String device_id;
     DrawerLayout drawer;
+
+    //private var
+    private String device_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +66,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //initialise main method
+
         initialise();
+
         v = new View(context);
         device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -126,6 +128,7 @@ public class MainActivity extends AppCompatActivity
         return super.onKeyDown(keycode, e);
     }
 
+    @Override
     public void onResume(){
         super.onResume();
         if (shared_preferences.getString("Registered",null) == null) {
@@ -134,14 +137,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Handle navigation view item clicks here.
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_manage) {
-
+            Intent intent = new Intent(context, SettingsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_about) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(R.string.about)
@@ -156,27 +162,29 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
+     * Initialise variables. views and other important functions here.
+     *
      * @author Qasim Musa
      */
     public void initialise(){
 
         //initialise variables.
-        shared_preferences = getSharedPreferences(jcc_prefs, Context.MODE_PRIVATE);
+        shared_preferences = getSharedPreferences(getResources().getString(R.string.jcc_shared_prefs), Context.MODE_PRIVATE);
         editor = shared_preferences.edit();
-        gson = new Gson();
         calendar = Calendar.getInstance();
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        payload = new HashMap<String,String>();
 
+        //Firebase tasks are done here.
         initFirebase();
 
-        //Find all EditTexts
-        payload = new HashMap<String,String>();
+        //Find all Views
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         edit_staff_id = (EditText)findViewById(R.id.edit_staff_id);
         edit_exinfo = (EditText)findViewById(R.id.edit_exinfo);
         edit_idNumber = (EditText)findViewById(R.id.edit_id);
         spinner_incident = (Spinner)findViewById(R.id.spinner_incident);
 
-        //Find all Buttons and initialise button clicks.
+        //Find and initialise button clicks.
         btn_submit = (Button)findViewById(R.id.btn_submit);
         btn_submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -228,9 +236,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onAuthenticated(AuthData authData) {
                 firebaseAuthData = authData;
-                String json = gson.toJson(authData);
-                editor.putString("fireAuthStr",json);
-                editor.commit();
                 Log.i("Firebase anonAuth", "Successfully logged in anonymously. uid: "+ authData.getUid().toString());
             }
             @Override
@@ -319,7 +324,7 @@ public class MainActivity extends AppCompatActivity
     public int uploadCheck(){
         if (str_id.length() == 0)
             return 1;
-        else if (!str_id.matches("[I-Ui-u]{1}[0-9]{5}"))
+        else if (!str_id.matches(getResources().getString(R.string.id_card_pattern)))
             return 2;
         else
             return 0;

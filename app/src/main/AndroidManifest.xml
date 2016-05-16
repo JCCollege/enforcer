@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -24,13 +25,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="Enforcer - Barcode Scanner"
-            android:name=".LaunchBarcode"></activity>
+            android:name=".LaunchBarcode"
+            android:label="Enforcer - Barcode Scanner" />
         <activity
             android:name=".Splash"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_splash"
-            android:theme="@style/FullscreenTheme">
+            android:theme="@style/FullscreenTheme"></activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="qmusa.jc.enforce.MainActivity" />
         </activity>
     </application>
 

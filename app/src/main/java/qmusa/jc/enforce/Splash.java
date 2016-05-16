@@ -26,7 +26,6 @@ public class Splash extends AppCompatActivity {
     Context context = this;
     SharedPreferences shared_preferences;
     SharedPreferences.Editor editor;
-    final String jcc_prefs = "JCCPrefs";
     EditText edit_staffName, edit_staffCode;
 
     @Override
@@ -38,28 +37,27 @@ public class Splash extends AppCompatActivity {
         edit_staffName = (EditText)findViewById(R.id.edit_staffName);
         edit_staffCode = (EditText)findViewById(R.id.edit_staffCode);
 
-        shared_preferences = getSharedPreferences(jcc_prefs, Context.MODE_PRIVATE);
+        shared_preferences = getSharedPreferences(getResources().getString(R.string.jcc_shared_prefs), Context.MODE_PRIVATE);
         editor = shared_preferences.edit();
 
         btnFinish = (Button)findViewById(R.id.btn_finish);
         btnFinish.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (!(edit_staffName.getText().length()<3) && !(edit_staffCode.getText().length()<3) && edit_staffCode.getText().toString().matches("[A-Za-z]{3}")){
-                    // Perform action on click
-                    editor.putString("Registered", "True");
-                    editor.putString("StaffName" , edit_staffName.getText().toString());
-                    editor.putString("StaffCode" , edit_staffCode.getText().toString().toUpperCase());
-                    editor.commit();
-                    finish();
-                } else {
-                    Snackbar snack = Snackbar.make(v, "The fields are not correctly filled in. Please check that all fields are filled in.", Snackbar.LENGTH_LONG);
-                    ViewGroup group = (ViewGroup) snack.getView();
-                    group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
-                    snack.show();
-                }
+            if (!(edit_staffName.getText().length()<3) && !(edit_staffCode.getText().length()<3) && edit_staffCode.getText().toString().matches("[A-Za-z]{3}")){
+                // Perform action on click
+                editor.putString("Registered", "True");
+                editor.putString("StaffName" , edit_staffName.getText().toString());
+                editor.putString("StaffCode" , edit_staffCode.getText().toString().toUpperCase());
+                editor.commit();
+                finish();
+            } else {
+                Snackbar snack = Snackbar.make(v, "The fields are not correctly filled in. Please check that all fields are filled in.", Snackbar.LENGTH_LONG);
+                ViewGroup group = (ViewGroup) snack.getView();
+                group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
+                snack.show();
+            }
             }
         });
-
 
     }
 }
