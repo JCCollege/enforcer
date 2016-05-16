@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         initialise();
 
         v = new View(context);
@@ -155,6 +154,9 @@ public class MainActivity extends AppCompatActivity
                     .setIcon(R.mipmap.icon);
             AlertDialog dialog = builder.create();
             dialog.show();
+        } else if (id == R.id.nav_help) {
+            Intent intent = new Intent(context, HelpActivity.class);
+            startActivity(intent);
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -329,7 +331,6 @@ public class MainActivity extends AppCompatActivity
         else
             return 0;
     }
-
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
