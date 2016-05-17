@@ -1,15 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="qmusa.jc.enforce.HelpActivity"
     tools:showIn="@layout/activity_help">
 
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <TextView
+        android:id="@+id/section_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/help_mail"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/section_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/section_1"
+        android:text="After successfully registering, you will be presented with a screen that looks like the one below."/>
+
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:layout_width="155dp"
+        android:layout_height="340dp"
+        android:id="@+id/img_screen_1"
+        android:layout_below="@id/section_2"
+        android:src="@mipmap/screen_1"
+        android:scaleType="fitStart" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/section_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/section_2"
+        android:layout_toRightOf="@+id/img_screen_1"
+        android:paddingLeft="5dp"
+        android:text="@string/help_section_3"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/section_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/section_3"
+        android:paddingLeft="5dp"
+        android:text="@string/help_section_4"/>
+
+
 </RelativeLayout>
+
+</ScrollView>

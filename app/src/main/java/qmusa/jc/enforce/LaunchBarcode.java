@@ -28,6 +28,7 @@ public class LaunchBarcode extends AppCompatActivity implements ZXingScannerView
         setContentView(R.layout.barcode_scanner);
 
         mScannerView = (ZXingScannerView) findViewById(R.id.scanner_view);
+        mScannerView.setFocusableInTouchMode(true);
 
         //mScannerView = new ZXingScannerView(this);
         //.relativeLayout.addView(mScannerView);
@@ -59,13 +60,15 @@ public class LaunchBarcode extends AppCompatActivity implements ZXingScannerView
         Log.v(TAG, rawResult.getText()); // Prints scan results
         Log.v(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         final String barcode_info = rawResult.getText();
+        final ZXingScannerView.ResultHandler handler = this;
+        mScannerView.stopCameraPreview();
 
         new AlertDialog.Builder(this)
                 .setTitle("Barcode information: ")
                 .setMessage(rawResult.getText())
                 .setNegativeButton("Scan again", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        //mScannerView.resumeCameraPreview(this);
+                        mScannerView.resumeCameraPreview(handler);
                     }
                 })
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -76,11 +79,11 @@ public class LaunchBarcode extends AppCompatActivity implements ZXingScannerView
                         finish();
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.mipmap.bc_dialog)
                 .show();
 
 
         // If you would like to resume scanning, call this method below:
-        mScannerView.resumeCameraPreview(this);
+
     }
 }

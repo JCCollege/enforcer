@@ -30,12 +30,10 @@ import android.widget.Spinner;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.google.gson.Gson;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -164,7 +162,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Initialise variables. views and other important functions here.
+     * Initialise variables, views and other functions here.
      *
      * @author Qasim Musa
      */
@@ -212,7 +210,7 @@ public class MainActivity extends AppCompatActivity
                             public void onClick(DialogInterface dialog, int which) {
                             }
                         })
-                        .setIcon(R.mipmap.info_pop)
+                        .setIcon(R.mipmap.clear)
                         .show();
                clearData();
             }
@@ -337,7 +335,7 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
                 str_stud_num = data.getStringExtra("barcode");
-                if (str_stud_num.matches("[a-zA-Z]{1}[0-9]{5}")){
+                if (str_stud_num.matches(getResources().getString(R.string.id_card_pattern))){
                     edit_idNumber.setText(str_stud_num);
                 } else {
                     new AlertDialog.Builder(this)

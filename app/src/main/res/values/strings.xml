@@ -9,7 +9,7 @@
 
     <string name="title_activity_splash">JCC Enforcer</string>
     <string name="str_register">Register</string>
-    <string name="about">JCC Enforcer is an app that allows staff members to log incidents involving JC students, and provide real time information, which is then uploaded to a secure server. \n\nThis app is created by Qasim Musa (qmusa@jcc.ac.uk).</string>
+    <string name="about">JCC Enforcer is an app that allows staff members to log incidents involving JC students, and provide real time information, which is then uploaded to a secure server. \n\nThis app is created by Qasim Musa (qmusa@jcc.ac.uk) and belongs to the JCC IT Services department.</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings used for functions and methods. -->
@@ -64,6 +64,15 @@
     </string-array>
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Help section -->
+
+    <string name="help_mail">In this section you will get a brief overview of how to use the application. Please contact <a href="mailto:servicedesk@jcc.ac.uk">servicedesk@jcc.ac.uk</a>  if you encounter any unusual issues.</string>
+    <string name="help_section_3">1. This is the form that you can use to scan a students bardcode via the \'Scan\' button and log all incident information about that particular student.\n\n
+        2. To scan a barcode, click the barcode button to the right of the text field. This will open the barcode reader to scan the student\'s ID card.\n\n
+        3. You can then select the incident type from the sprinner and input any additional information if required. You will then be able to submit your incident.</string>
+    <string name="help_section_4">If you encounter any further issues. Please re-install the app or contact one of the IT Services team members. </string>
+
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
