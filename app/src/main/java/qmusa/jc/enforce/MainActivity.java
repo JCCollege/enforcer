@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity
                     .setIcon(R.mipmap.info)
                     .show();
             } else if (uploadCheck() == 1) {
-                Snackbar snack = Snackbar.make(v, "ID number not scanned. Scan or input student's ID number.", Snackbar.LENGTH_LONG);
+                Snackbar snack = Snackbar.make(v, "ID number not scanned. Scan or type in a student ID number.", Snackbar.LENGTH_LONG);
                 ViewGroup group = (ViewGroup) snack.getView();
                 group.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
                 snack.show();
