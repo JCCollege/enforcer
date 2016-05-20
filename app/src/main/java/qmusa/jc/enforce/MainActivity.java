@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
@@ -23,16 +25,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
@@ -52,6 +59,8 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences.Editor editor;
     View v;
     DrawerLayout drawer;
+    List<String> spinnerArray;
+    ArrayAdapter<String> arrayAdapter;
 
     //private var
     private String device_id;
@@ -173,6 +182,8 @@ public class MainActivity extends AppCompatActivity
         editor = shared_preferences.edit();
         calendar = Calendar.getInstance();
         payload = new HashMap<String,String>();
+        spinnerArray =  new ArrayList<String>();
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray);
 
         //Firebase tasks are done here.
         initFirebase();
@@ -183,6 +194,8 @@ public class MainActivity extends AppCompatActivity
         edit_exinfo = (EditText)findViewById(R.id.edit_exinfo);
         edit_idNumber = (EditText)findViewById(R.id.edit_id);
         spinner_incident = (Spinner)findViewById(R.id.spinner_incident);
+
+        fillSpinnerIncident();
 
         //Find and initialise button clicks.
         btn_submit = (Button)findViewById(R.id.btn_submit);
@@ -247,6 +260,57 @@ public class MainActivity extends AppCompatActivity
         myFirebaseRef.keepSynced(true);
     }
 
+    public void fillSpinnerIncident(){
+        shared_preferences.getString("",null);
+        if (isNetworkAvailable()) {
+            retrieveIncidentFirebase();
+            //spinnerArray.add("Other ");
+        } else {
+            spinnerArray.add("Fight");
+            spinnerArray.add("Not wearing ID card");
+            spinnerArray.add("Other grievance");
+        }
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_incident.setAdapter(arrayAdapter);
+    }
+
+    public void retrieveIncidentFirebase(){
+
+        myFirebaseRef.child("Incidents").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String values = snapshot.getValue().toString();
+                values = values.replace("{","");
+                values = values.replace("}","");
+
+
+                String [] incidents = values.split(", ");
+
+                for (int i = 0; i < incidents.length; i++){
+                    incidents[i] = incidents[i].replaceAll(".*=","");
+                    spinnerArray.add(incidents[i]);
+                }
+
+                //spinnerArray.add(incident[0]);
+                Log.e("FIREBASE INCIDENT",(snapshot.getValue().toString()));
+
+                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner_incident.setAdapter(arrayAdapter);
+                spinner_incident.setSelection(0);
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     public void uploadFirebase(final View v){
 
         calendar = Calendar.getInstance();
@@ -254,12 +318,12 @@ public class MainActivity extends AppCompatActivity
         str_info = edit_exinfo.getText().toString();
         str_incident = spinner_incident.getSelectedItem().toString();
         payload.put("Student ID number",str_id);
-        payload.put("Incident Information",str_incident);
+        payload.put("Incidents Information",str_incident);
         payload.put("Extra Info",str_info);
 
         if (firebaseAuthData == null){
             initFirebase();
-            Snackbar.make(v, "Still loading. Please wait...", Snackbar.LENGTH_LONG)
+            Snackbar.make(v, "Connecting to Firebase. Please wait...", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         } else {
             if (uploadCheck() == 0) {
@@ -275,7 +339,7 @@ public class MainActivity extends AppCompatActivity
                                             .child(shared_preferences.getString("StaffCode",null))
                                                 .child("Device_ID: "+ device_id)
                                                     .child(firebaseAuthData.getUid())
-                                                        .child("Incident(s)")
+                                                        .child("Incidents(s)")
                                                             .child(calendar.getTime().toString())
                                                                 .setValue(payload);
 

@@ -34,7 +34,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_marginBottom="10dp"
             android:textColor="@color/colorPrimary"
-            android:text="Record an incident by providing the detail required below, then click Submit."/>
+            android:text="Record an incident by providing the details required, then click Submit."/>
 
         <TableLayout
             android:layout_width="fill_parent"
@@ -96,6 +96,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:maxLines="7"
+                    android:layout_marginTop="10dp"
                     android:textColorHint="@color/colorGrey"
                     android:hint="Input any addtitional information here."
                     android:layout_height="wrap_content"
