@@ -34,6 +34,7 @@ import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity
 
     //Global Variables
     Context context = this;
-    String str_stud_num = null, str_id, str_info, str_incident;
+    String str_stud_num = null, str_id, str_info, str_incident, str_staff_email;
     Button btn_submit, btn_clear, btn_br;
     EditText edit_idNumber, edit_staff_id, edit_exinfo;
     Spinner spinner_incident;
@@ -58,12 +59,25 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences shared_preferences;
     SharedPreferences.Editor editor;
     View v;
+    String fbaseUID;
     DrawerLayout drawer;
     List<String> spinnerArray;
     ArrayAdapter<String> arrayAdapter;
 
+    Firebase.AuthResultHandler handler = new Firebase.AuthResultHandler() {
+        @Override
+        public void onAuthenticated(AuthData authData) {
+            firebaseAuthData = authData;
+            Log.i("Firebase anonAuth", "Successfully logged in anonymously. uid: "+ authData.getUid().toString());
+        }
+        @Override
+        public void onAuthenticationError(FirebaseError firebaseError) {
+            Log.e("Firebase anonAuth", ""+firebaseError);
+        }
+    };
+
     //private var
-    private String device_id;
+//    private String device_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +90,7 @@ public class MainActivity extends AppCompatActivity
         initialise();
 
         v = new View(context);
-        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
@@ -97,7 +111,22 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            new AlertDialog.Builder(context)
+                    .setTitle("Quit")
+                    .setMessage("Are you sure you want to quit? You will lose all data.")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //mScannerView.resumeCameraPreview(this);
+                            clearData();
+                            finish();
+                        };
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .setIcon(R.mipmap.clear)
+                    .show();
         }
     }
 
@@ -141,6 +170,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(context, Splash.class);
             startActivity(intent);
         }
+        initFirebase();
     }
 
     /**
@@ -186,6 +216,9 @@ public class MainActivity extends AppCompatActivity
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray);
 
         //Firebase tasks are done here.
+//        if shared_preferences.getString("fbaseUID",""){
+//
+//        }
         initFirebase();
 
         //Find all Views
@@ -194,6 +227,7 @@ public class MainActivity extends AppCompatActivity
         edit_exinfo = (EditText)findViewById(R.id.edit_exinfo);
         edit_idNumber = (EditText)findViewById(R.id.edit_id);
         spinner_incident = (Spinner)findViewById(R.id.spinner_incident);
+        str_staff_email = shared_preferences.getString("StaffName", null);
 
         fillSpinnerIncident();
 
@@ -245,17 +279,11 @@ public class MainActivity extends AppCompatActivity
 //        Firebase.getDefaultConfig().setPersistenceEnabled(true);
         myFirebaseRef = new Firebase("https://shining-inferno-9227.firebaseio.com/");
 
-        myFirebaseRef.authAnonymously(new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                firebaseAuthData = authData;
-                Log.i("Firebase anonAuth", "Successfully logged in anonymously. uid: "+ authData.getUid().toString());
-            }
-            @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-                Log.e("Firebase anonAuth", "Error logging in.");
-            }
-        });
+//        myFirebaseRef.authAnonymously(handler);
+        Log.e("username",""+str_staff_email);
+        if (str_staff_email!= null) {
+            myFirebaseRef.authWithPassword(str_staff_email, "P@p3r123", handler);
+        }
 
         myFirebaseRef.keepSynced(true);
     }
@@ -317,9 +345,10 @@ public class MainActivity extends AppCompatActivity
         str_id = edit_idNumber.getText().toString();
         str_info = edit_exinfo.getText().toString();
         str_incident = spinner_incident.getSelectedItem().toString();
-        payload.put("Student ID number",str_id);
-        payload.put("Incidents Information",str_incident);
-        payload.put("Extra Info",str_info);
+        payload.put("1 - Student ID number",str_id);
+        payload.put("2 - Incidents Information",str_incident);
+        payload.put("3 - Extra Information",str_info);
+        payload.put("4 - Staff Email",str_staff_email);
 
         if (firebaseAuthData == null){
             initFirebase();
@@ -327,6 +356,7 @@ public class MainActivity extends AppCompatActivity
                     .setAction("Action", null).show();
         } else {
             if (uploadCheck() == 0) {
+                Log.e("tstamp",ServerValue.TIMESTAMP.get(".sv"));
                 new AlertDialog.Builder(this)
                     .setTitle("Upload data?")
                     .setMessage("Are you sure you would like to submit this incident?")
@@ -336,10 +366,9 @@ public class MainActivity extends AppCompatActivity
                             try {
                                 myFirebaseRef
                                         .child("Staff")
-                                            .child(shared_preferences.getString("StaffCode",null))
-                                                .child("Device_ID: "+ device_id)
+                                            .child(str_staff_email.split("@")[0])
+//                                                .child("Device_ID: "+ device_id)
                                                     .child(firebaseAuthData.getUid())
-                                                        .child("Incidents(s)")
                                                             .child(calendar.getTime().toString())
                                                                 .setValue(payload);
 

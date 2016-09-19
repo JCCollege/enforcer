@@ -43,11 +43,12 @@ public class Splash extends AppCompatActivity {
         btnFinish = (Button)findViewById(R.id.btn_finish);
         btnFinish.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            if (!(edit_staffName.getText().length()<3) && !(edit_staffCode.getText().length()<3) && edit_staffCode.getText().toString().matches("[A-Za-z]{3}")){
+            if (!(edit_staffName.getText().length()<3) && edit_staffName.getText().toString().matches("[A-Za-z0-9]+@jcc.ac.uk")){
+//                    && !(edit_staffCode.getText().length()<3) && edit_staffCode.getText().toString().matches("[A-Za-z]{3}")){
                 // Perform action on click
                 editor.putString("Registered", "True");
                 editor.putString("StaffName" , edit_staffName.getText().toString());
-                editor.putString("StaffCode" , edit_staffCode.getText().toString().toUpperCase());
+//                editor.putString("StaffCode" , edit_staffCode.getText().toString().toUpperCase());
                 editor.commit();
                 finish();
             } else {

@@ -63,24 +63,29 @@ public class LaunchBarcode extends AppCompatActivity implements ZXingScannerView
         final ZXingScannerView.ResultHandler handler = this;
         mScannerView.stopCameraPreview();
 
-        new AlertDialog.Builder(this)
-                .setTitle("Barcode information: ")
-                .setMessage(rawResult.getText())
-                .setNegativeButton("Scan again", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        mScannerView.resumeCameraPreview(handler);
-                    }
-                })
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        intent.putExtra("barcode",barcode_info);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                })
-                .setIcon(R.mipmap.bc_dialog)
-                .show();
+        Intent intent = new Intent();
+        intent.putExtra("barcode",barcode_info);
+        setResult(RESULT_OK, intent);
+        finish();
+
+//        new AlertDialog.Builder(this)
+//                .setTitle("Barcode information: ")
+//                .setMessage(rawResult.getText())
+//                .setNegativeButton("Scan again", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        mScannerView.resumeCameraPreview(handler);
+//                    }
+//                })
+//                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Intent intent = new Intent();
+//                        intent.putExtra("barcode",barcode_info);
+//                        setResult(RESULT_OK, intent);
+//                        finish();
+//                    }
+//                })
+//                .setIcon(R.mipmap.bc_dialog)
+//                .show();
 
 
         // If you would like to resume scanning, call this method below:
